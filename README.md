@@ -11,10 +11,11 @@ Original App Design Project - README Template
 
 ## Overview
 ### Description
-[Description of your app]
+People can create, share, and appreciate the music made with the app. The main fuctionality is that users can create a song through the app; Each location on the 
+screen will be assigned to a unique musical sound based on volume and tone. Additionally Users can use their spotify information to populate their profiles and 
+post music to showcase the mood they're in.
 
 ### App Evaluation
-[Evaluation of your app across the following attributes]
 - **Category:**
     - interactive and creative app that investigates the possibilities of music
 - **Mobile:**
@@ -26,29 +27,36 @@ Original App Design Project - README Template
 - **Habit:**
     - 
 - **Scope:**
-
+    - 
 ## Product Spec
 
 ### 1. User Stories (Required and Optional)
 
 **Required Must-have Stories**
 
-* [fill in your required user stories here]
-* ...
+* User can sign in
+* User can make music - Touching screen makes sound
+* User can make music - Multiple fingers
+* User can make music - Icons that press can be dropped on page
+* User can share the music
+* Can use the spotify library to post music
 
 **Optional Nice-to-have Stories**
 
-* [fill in your required user stories here]
-* ...
+* Can use the spotify library to post music
+* User can make music - Icons that press can be dropped on page
 
 ### 2. Screen Archetypes
 
-* [list first screen here]
-   * [list associated required story here]
-   * ...
-* [list second screen here]
-   * [list associated required story here]
-   * ...
+* Login
+   * User can login
+   * Login with spotify
+* Feed 
+   * Can make post - make music
+   * Can make post - Spotify
+   * Can follow _____ to populate timeine
+* Profile
+   * Post appear here
 
 ### 3. Navigation
 
@@ -60,15 +68,16 @@ Original App Design Project - README Template
 
 **Flow Navigation** (Screen to Screen)
 
-* Login Screen
+* Login
    * [list screen navigation here]
    * ...
-* Homescreen
+* Feed
    * [list screen navigation here]
    * ...
-* Creating screen
+* Creating Post
    * [list screen navigation here]
-   * ...
+* Profile
+   * 
 
 ## Wireframes
 [Add picture of your hand sketched wireframes in this section]
