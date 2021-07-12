@@ -11,8 +11,7 @@ Original App Design Project - README
 
 ## Overview
 ### Description
-People can create, share, and appreciate the music made with the app. The main fuctionality is that users can create a song through the app; Each location on the 
-screen will be assigned to a unique musical sound based on volume and tone. Additionally Users can use their spotify information to populate their profiles and 
+The main fuctionality is that users can create a song through the app based on touch. Each location on the screen will be assigned to a unique musical sound based on volume and tone. The app will record the music made. People can create, share, and appreciate the music made with the app. Additionally Users can use their spotify information to populate their profiles and 
 post music to showcase the mood they're in.
 
 ### App Evaluation
@@ -36,41 +35,51 @@ post music to showcase the mood they're in.
 
 * User can sign in
 * User can make music - Touching screen makes sound
-* User can make music - Multiple fingers
-* User can make music - Icons that press can be dropped on page
-* User can share the music
+* User can share/publish the music 
 * Can use the spotify library to post music
 
 **Optional Nice-to-have Stories**
-
-* Can use the spotify library to post music
 * User can make music - Icons that press can be dropped on page
+* User can make music - Multiple fingers
+* Can use the spotify library to post music
+* Ripple effect 
+* User can make music - Cropping the audio
+* User can make music - Icons that press can be dropped on page - Option to choose frequency of click
 
 ### 2. Screen Archetypes
 
 * Login
    * User can login
    * Login with spotify
+   * People can sign up
 * Feed 
    * Can make post - make music
    * Can make post - Spotify
    * Can follow _____ to populate timeine
+* Create
+   * Start & Stop button
+   * Touch to music
+   * record music
 * Profile
    * Post appear here
+   * Sotify music to populate - current song, top songs
+   * tags for what you like/follow
+   * subscribe to people and tags
 
 ### 3. Navigation
 
 **Tab Navigation** (Tab to Screen)
 
-* [fill out your first tab]
-* [fill out your second tab]
-* [fill out your third tab]
+* Feed
+* Create
+* Profile
 
 **Flow Navigation** (Screen to Screen)
 
 * Login
-   * [list screen navigation here]
-   * ...
+   * A sign in
+   * A sign up
+   * Sign into acc w/ spotify.
 * Feed
    * [list screen navigation here]
    * ...
