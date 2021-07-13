@@ -1,0 +1,2 @@
+rootProject.name = "Rap&Tap"
+include ':app'
