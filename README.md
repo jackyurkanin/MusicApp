@@ -11,7 +11,7 @@ Original App Design Project - README
 
 ## Overview
 ### Description
-The main fuctionality is that users can create a song through the app based on touch. Each location on the screen will be assigned to a unique musical sound based on volume and tone. The app will record the music made. People can create, share, and appreciate the music made with the app. Additionally Users can use their spotify information to populate their profiles and 
+The main fuctionality is that users can create a song through the app based on touch with real-time synthesis. Each location on the screen will be assigned to a unique musical sound based on volume and tone. The app will record the music made. People can create, share, and appreciate the music made with the app. Additionally Users can use their spotify information to populate their profiles and 
 post music to showcase the mood they're in.
 
 ### App Evaluation
