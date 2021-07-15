@@ -89,8 +89,8 @@ post music to showcase the mood they're in.
    * 
 
 ## Wireframes
-[Add picture of your hand sketched wireframes in this section]
-<img src="YOUR_WIREFRAME_IMAGE_URL" width=600>
+* MVP Display
+<img src="https://github.com/jackyurkanin/MusicApp/blob/main/untitled.png?raw=true" width=600>
 
 ### [BONUS] Digital Wireframes & Mockups
 
