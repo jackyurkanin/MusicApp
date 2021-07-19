@@ -6,4 +6,8 @@
         android:id="@+id/miStudio"
         android:title="Studio"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/miLogout"
+        android:title="@string/Logout"
+        app:showAsAction="collapseActionView" />
 </menu>
