@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
         android:src="@drawable/ic_launcher_background"
         app:layout_constraintTop_toBottomOf="@+id/ivLogo" />
 
@@ -40,7 +41,6 @@
         android:hint="@string/Pass"
         android:inputType="textPersonName"
         android:visibility="visible"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintTop_toBottomOf="@+id/etUsername" />
 
     <Button
@@ -53,5 +53,47 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etPassword" />
+
+    <Button
+        android:id="@+id/btnNewUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50dp"
+        android:text="@string/NewUser" />
+
+    <EditText
+        android:id="@+id/etSignupUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:ems="10"
+        android:hint="@string/User"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnNewUser" />
+
+    <EditText
+        android:id="@+id/etSignupPass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:hint="@string/Pass"
+        android:inputType="textPersonName"
+        android:visibility="invisible"
+        app:layout_constraintTop_toBottomOf="@+id/etSignupUser" />
+
+    <Button
+        android:id="@+id/btnSignup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:visibility="invisible"
+        android:text="@string/Signup" />
 
 </LinearLayout>

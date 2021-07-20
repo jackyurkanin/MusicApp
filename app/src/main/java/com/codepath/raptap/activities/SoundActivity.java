@@ -1,9 +1,13 @@
 package com.codepath.raptap.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -20,6 +24,7 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
     private Context context;
     private MediaPlayer mp;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,7 +33,6 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
         setContentView(view);
         context = this;
         mp = MediaPlayer.create(context, R.raw.sound);
-        // buildSoundBoard();
         view.setOnTouchListener(this);
     }
 
@@ -39,18 +43,52 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
         // bounds: 0 < x < 1818
         float yPos = touchEvent.getY();
         Log.i("TAG", "At position: (" + String.valueOf(xPos) + ", " + String.valueOf(yPos) + ")");
+        // To Do:
+        //  Use x & y to control frequency and pitch
+
         try {
-            if (mp.isPlaying()) {
-                mp.stop();
-                mp.reset();
-                mp.release();
-                mp = MediaPlayer.create(context, R.raw.sound);
+            switch(touchEvent.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    if (mp == null) {
+                        mp = MediaPlayer.create(context, R.raw.sound);
+                    }
+                    if (mp.isPlaying()) {
+                        mp.stop();
+                        mp.reset();
+                    }
+                    mp.start();
+                    break;
+                case MotionEvent.ACTION_UP:
+                    mp.stop();
+                    mp.reset();
+                    mp.release();
+                    break;
             }
-            mp.start();
-//            Log.e(DEBUG, String.valueOf(mp.));
         } catch (Exception e) {
             e.printStackTrace();
         }
         return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.sound_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.miBack:
+                mp.release();
+                finish();
+                return true;
+            case R.id.miEdit:
+                mp.release();
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

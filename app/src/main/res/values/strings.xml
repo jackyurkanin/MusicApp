@@ -4,4 +4,6 @@
     <string name="Login">Login</string>
     <string name="User">Username</string>
     <string name="Logout">Logout</string>
+    <string name="NewUser">New User</string>
+    <string name="Signup">Sign Up</string>
 </resources>
