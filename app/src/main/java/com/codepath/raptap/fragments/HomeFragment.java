@@ -33,7 +33,7 @@ public class HomeFragment extends Fragment {
     private static final String TAG = "HomeFragment";
     private RecyclerView rvFeed;
     protected FeedAdapter adapter;
-    protected List<Sound> allPosts;
+    protected List<Sound> allSounds;
     private EndlessRecyclerViewScrollListener scrollListener;
     private SwipeRefreshLayout swipeContainer;
 
@@ -65,8 +65,8 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         rvFeed = binding.rvFeed;
         swipeContainer = binding.swipeContainer;
-        allPosts = new ArrayList<>();
-        adapter = new FeedAdapter(context, allPosts);
+        allSounds = new ArrayList<>();
+        adapter = new FeedAdapter(context, allSounds);
 
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -86,7 +86,7 @@ public class HomeFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         rvFeed.setAdapter(adapter);
         rvFeed.setLayoutManager(linearLayoutManager);
-//        rvFeed.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
+        rvFeed.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
         rvFeed.setAdapter(adapter);
         scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
@@ -121,7 +121,7 @@ public class HomeFragment extends Fragment {
         // start an asynchronous call for posts
         query.findInBackground(new FindCallback<Sound>() {
             @Override
-            public void done(List<Sound> posts, ParseException e) {
+            public void done(List<Sound> sounds, ParseException e) {
                 // check for errors
                 if (e != null) {
                     Log.e(TAG, "Issue with getting posts", e);
@@ -129,7 +129,7 @@ public class HomeFragment extends Fragment {
                 }
 
                 // save received posts to list and notify adapter of new data
-                allPosts.addAll(posts);
+                allSounds.addAll(sounds);
                 adapter.notifyDataSetChanged();
                 swipeContainer.setRefreshing(false);
             }
@@ -156,7 +156,7 @@ public class HomeFragment extends Fragment {
                     return;
                 }
                 // Add all the posts we received back to the end of our posts list
-                allPosts.addAll(allPosts.size(), sounds);
+                allSounds.addAll(allSounds.size(), sounds);
                 // notify the adapter we added new stuff to the end of the list
                 adapter.notifyItemRangeInserted(offset, sounds.size() - 1);
                 swipeContainer.setRefreshing(false);

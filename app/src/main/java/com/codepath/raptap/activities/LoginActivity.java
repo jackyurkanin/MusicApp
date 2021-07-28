@@ -43,8 +43,8 @@ public class LoginActivity extends AppCompatActivity {
         etSignupPass = binding.etSignupPass;
         etSignupUser = binding.etSignupUser;
 
-        btnSignUp = binding.btnSignup;
-        btnSignUp.setOnClickListener(new View.OnClickListener() {
+        btnNewUser = binding.btnNewUser;
+        btnNewUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 screenChange();
@@ -68,14 +68,18 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String Username = etSignupUser.getText().toString();
                 String Password = etSignupPass.getText().toString();
-                Log.e(TAG, Username + "  "+ Password);
+                Log.i(TAG, Username + "  "+ Password);
                 newUser(Username, Password);
             }
         });
     }
 
     private void screenChange() {
-
+        // get rid of button, make everything else visible
+        btnNewUser.setVisibility(View.GONE);
+        btnSignUp.setVisibility(View.VISIBLE);
+        etSignupUser.setVisibility(View.VISIBLE);
+        etSignupPass.setVisibility(View.VISIBLE);
     }
 
     private void newUser(String username, String password) {
