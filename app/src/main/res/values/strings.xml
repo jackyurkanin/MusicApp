@@ -10,4 +10,7 @@
     <string name="Profile">Profile</string>
     <string name="hello_blank_fragment" />
     <string name="Description">Description</string>
+    <string name="SongName">Enter song name</string>
+    <string name="Create">Create</string>
+    <string name="Finish">Finish</string>
 </resources>

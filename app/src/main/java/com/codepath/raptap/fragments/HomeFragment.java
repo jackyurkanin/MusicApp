@@ -86,7 +86,7 @@ public class HomeFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         rvFeed.setAdapter(adapter);
         rvFeed.setLayoutManager(linearLayoutManager);
-        rvFeed.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
+//        rvFeed.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
         rvFeed.setAdapter(adapter);
         scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
