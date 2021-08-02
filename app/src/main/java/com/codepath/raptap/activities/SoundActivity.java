@@ -29,27 +29,31 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
 
     private static final String TAG = "SoundActivity";
     public static final String DEBUG = "DEBUG";
+    // Use 8000Hz for emulator and 44100 for phone it really should be at least double the frequency we want
     private static final int TRACK_SAMPLE_RATE = 8000;
     private static final int TRACK_CHANNELS = AudioFormat.CHANNEL_IN_STEREO;
     private static final int TRACK_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
     private static final int RECORD_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
     private static final int myStream = 0;
+    private static final float BASE_FREQUENCY = (float) 27.5;
+    private static final float SCALAR = 2000;
+    private static final float SCALAR_TWO = 2000;
 
     private int HEIGHT;
     private int WIDTH;
     private int minBufferSize;
     private int minBufferSizeRec;
+
     private ActivitySoundBinding binding;
     private Context context;
     private MediaRecorder recorder;
     private AudioTrack track;
     private AudioTask audioSynth;
+
     private volatile boolean isPressed;
     private volatile boolean recording;
-    private volatile float synth_frequency = BASE_FREQUENCY;
-    private volatile float amplitude;
-    private static final float BASE_FREQUENCY = (float) 27.5;
-    private static final float SCALAR = 2000;
+    private volatile float frequencyOne = BASE_FREQUENCY;
+    private volatile float frequencyTwo = BASE_FREQUENCY;
     private short[] totalBuffer;
     private final Executor executor = Executors.newSingleThreadExecutor(); // change according to your requirements
 
@@ -79,7 +83,7 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
     }
 
     private void setUpAudioTrack() {
-        minBufferSize = AudioTrack.getMinBufferSize(TRACK_SAMPLE_RATE, TRACK_CHANNELS, TRACK_AUDIO_ENCODING);
+        minBufferSize = 2 * AudioTrack.getMinBufferSize(TRACK_SAMPLE_RATE, TRACK_CHANNELS, TRACK_AUDIO_ENCODING);
         AudioAttributes attributes = new AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_MEDIA)
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
@@ -97,7 +101,7 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
 //        Log.e(DEBUG, String.valueOf(minBufferSizeRec) + "    " + minBufferSize);
 //        recorder = new AudioRecord(MediaRecorder.AudioSource.UNPROCESSED, TRACK_SAMPLE_RATE, RECORD_CHANNELS, TRACK_AUDIO_ENCODING, minBufferSizeRec);
         recorder = new MediaRecorder();
-        recorder.setAudioSource(MediaRecorder.AudioSource.UNPROCESSED);
+        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         recorder.setAudioChannels(RECORD_CHANNELS);
         recorder.setAudioEncoder(TRACK_AUDIO_ENCODING);
 
@@ -126,10 +130,10 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_MOVE:
                 isPressed = true;
-                synth_frequency = BASE_FREQUENCY + SCALAR * yPos / HEIGHT;
-                amplitude = xPos / WIDTH;
-                Log.i(TAG, "Frequency: " + String.valueOf(synth_frequency));
-                Log.i(TAG, "Amplitude: " + String.valueOf(amplitude));
+                frequencyOne = BASE_FREQUENCY + SCALAR * yPos / HEIGHT;
+                frequencyTwo = BASE_FREQUENCY + SCALAR_TWO * xPos / WIDTH;
+                Log.i(TAG, "Freq due to yPos: " + String.valueOf(frequencyOne));
+                Log.i(TAG, "Freq due to xPos: " + String.valueOf(frequencyTwo));
                 executeAsync(audioSynth);
                 break;
             case MotionEvent.ACTION_UP:
@@ -167,10 +171,9 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
                 // ToDo:
                 //  Need to make it start the playing after you press then set visibilty to gone and set visibility to appear when enter
                 setUpAudioTrack();
-                setUpAudioRecord();
-//                track.flush();
+//                setUpAudioRecord();
                 track.play();
-                recorder.start();
+//                recorder.start();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -193,18 +196,18 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
         @Override
         public short[] call() {
             short[] buffer = new short[minBufferSize];
-            int offsetRec = 0;
+            int time = 1;
             while (isPressed) {
-                float angular_frequency = (float) (2 * Math.PI) * synth_frequency / TRACK_SAMPLE_RATE;
-                Log.e(TAG, "Angular Freq: " + angular_frequency);
-                float angle = angular_frequency;
-                int counter = 1;
+                float angular_frequencyOne = (float) (2 * Math.PI) * frequencyOne / TRACK_SAMPLE_RATE;
+                float angular_frequencyTwo = (float) (2 * Math.PI) * frequencyTwo / TRACK_SAMPLE_RATE;
+
                 for (int i = 0; i < buffer.length; ++i) {
-//                    buffer[i] = (short) (Short.MAX_VALUE * ((float) Math.sin(angle)));
-                    buffer[i] = (short) (Short.MAX_VALUE * ((float) Math.sin(angular_frequency * counter / minBufferSize)));
+                    float angleOne =  angular_frequencyOne * time;
+                    float angleTwo =  (angular_frequencyTwo * time);
+
+                    buffer[i] = (short) (Short.MAX_VALUE * ((float) Math.sin(angleOne) ));
 //                    buffer[i] = (short) (Short.MAX_VALUE * ((float) Math.sin(angle) * amplitude));
-//                    angle += angular_frequency;
-                    counter += 1;
+                    time += 1;
                 }
                 track.write(buffer, 0, buffer.length);
 
