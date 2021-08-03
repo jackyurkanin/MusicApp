@@ -16,13 +16,16 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.codepath.raptap.models.Sound;
 import com.parse.ParseFile;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     private Context context;
     private List<Sound> feed;
-    private static final String POST = "feedAdapter";
+    private static final String TAG = "feedAdapter";
     private static final String DEBUG = "Debug process";
     private static int ROUNDED_CORNERS = 30;
 
@@ -68,6 +71,11 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         private TextView tvCreatedAt;
         private ImageView ivCoverImage;
 
+        private static final int SECOND_MILLIS = 1000;
+        private static final int MINUTE_MILLIS = 60 * SECOND_MILLIS;
+        private static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
+        private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ivCoverImage = itemView.findViewById(R.id.ivCoverImage);
@@ -82,7 +90,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             tvDescription.setText(sound.getDescription());
             tvUsername.setText("by " + sound.getUser().getUsername());
             tvSongName.setText(sound.getSongName());
-//            tvCreatedAt.setText(dateTime(sound.getCreatedAt()));
+            tvCreatedAt.setText(getRelativeTimeAgo(sound.getCreatedAt().toString()));
             ParseFile audio = sound.getSound();
             ParseFile image = sound.getCoverPic();
             if (image != null) {
@@ -96,12 +104,41 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                 public void onClick(View v) {
                     // ToDo:
                     //   Make onClick play music and advance a progress bar
+
                 }
             });
         }
 
-//        private int dateTime(Date createdAt) {
-//        }
+        public String getRelativeTimeAgo(String rawJsonDate) {
+            String twitterFormat = "EEE MMM dd HH:mm:ss ZZZ yyyy";
+            SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
+            sf.setLenient(true);
 
+            try {
+                long time = sf.parse(rawJsonDate).getTime();
+                long now = System.currentTimeMillis();
+
+                final long diff = now - time;
+                if (diff < MINUTE_MILLIS) {
+                    return "just now";
+                } else if (diff < 2 * MINUTE_MILLIS) {
+                    return "a minute ago";
+                } else if (diff < 50 * MINUTE_MILLIS) {
+                    return diff / MINUTE_MILLIS + " m";
+                } else if (diff < 90 * MINUTE_MILLIS) {
+                    return "an hour ago";
+                } else if (diff < 24 * HOUR_MILLIS) {
+                    return diff / HOUR_MILLIS + " h";
+                } else if (diff < 48 * HOUR_MILLIS) {
+                    return "yesterday";
+                } else {
+                    return diff / DAY_MILLIS + " d";
+                }
+            } catch (ParseException e) {
+                Log.i(TAG, "getRelativeTimeAgo failed");
+                e.printStackTrace();
+            }
+            return "";
+        }
     }
 }

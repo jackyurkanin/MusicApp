@@ -1,16 +1,25 @@
 package com.codepath.raptap.models;
 
+import android.util.Log;
+
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 @ParseClassName("Sound")
 public class Sound extends ParseObject {
 
+    public static final String TAG = "SoundClass";
     private static final String KEY_DESCRIPTION = "description";
     private static final String KEY_SOUND = "sound";
     private static final String KEY_NAME = "name";
+    public static final String KEY_CREATEDAT = "createdAt";
     private static final String KEY_COVER_PICTURE = "cover";
     public static final String KEY_USER = "user";
 
