@@ -27,22 +27,24 @@
         <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
       </path>
     </expand>
-    <select />
+    <select>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="BRANCH:main" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a4abc74b-35df-4207-9418-72443981d06f" name="Default Changelist" comment="Built up infrastructure and improved sound capabilities">
+    <list default="true" id="a4abc74b-35df-4207-9418-72443981d06f" name="Default Changelist" comment="updated Sound function">
       <change beforePath="$PROJECT_DIR$/.gradle/6.7.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.7.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.7.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.7.1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.7.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.7.1/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.7.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.7.1/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/6.7.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.7.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.7.1/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.7.1/javaCompile/classAnalysis.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/6.7.1/javaCompile/jarAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.7.1/javaCompile/jarAnalysis.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.7.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.7.1/javaCompile/javaCompile.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/6.7.1/javaCompile/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.7.1/javaCompile/taskHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/codepath/raptap/activities/SoundActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/codepath/raptap/activities/SoundActivity.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -247,7 +249,21 @@
       <option name="project" value="LOCAL" />
       <updated>1626822369651</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Made sound smooth and work on using x axis as another frequency">
+      <created>1627934246208</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1627934246208</updated>
+    </task>
+    <task id="LOCAL-00008" summary="updated Sound function">
+      <created>1627949598394</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1627949598394</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -255,7 +271,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -268,7 +296,9 @@
     <MESSAGE value="Added basic layouts, activities, and created Login capabilities" />
     <MESSAGE value="Added menu items logout and Studio (for making recording)" />
     <MESSAGE value="Built up infrastructure and improved sound capabilities" />
-    <option name="LAST_COMMIT_MESSAGE" value="Built up infrastructure and improved sound capabilities" />
+    <MESSAGE value="Made sound smooth and work on using x axis as another frequency" />
+    <MESSAGE value="updated Sound function" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated Sound function" />
   </component>
   <component name="WindowStateProjectService">
     <state x="709" y="247" key="#com.intellij.ide.util.MemberChooser" timestamp="1626307567129">
@@ -310,52 +340,57 @@
     </state>
     <state x="726" y="335" key="AndroidCreateXmlResourceDialog/0.25.1792.1023@0.25.1792.1023" timestamp="1626824275040" />
     <state x="508" y="321" key="AndroidCreateXmlResourceDialog/0.25.1792.1024@0.25.1792.1024" timestamp="1626817951497" />
-    <state width="1750" height="308" key="GridCell.Tab.0.bottom" timestamp="1627929558490">
-      <screen x="0" y="25" width="1792" height="1027" />
+    <state width="1750" height="118" key="GridCell.Tab.0.bottom" timestamp="1627949607381">
+      <screen x="0" y="25" width="1792" height="1029" />
     </state>
     <state width="1750" height="265" key="GridCell.Tab.0.bottom/0.25.1792.1021@0.25.1792.1021" timestamp="1626825509015" />
     <state width="1750" height="275" key="GridCell.Tab.0.bottom/0.25.1792.1023@0.25.1792.1023" timestamp="1626824863662" />
     <state width="1750" height="275" key="GridCell.Tab.0.bottom/0.25.1792.1024@0.25.1792.1024" timestamp="1626892868896" />
     <state width="1750" height="67" key="GridCell.Tab.0.bottom/0.25.1792.1026@0.25.1792.1026" timestamp="1626468554266" />
-    <state width="1750" height="308" key="GridCell.Tab.0.bottom/0.25.1792.1027@0.25.1792.1027" timestamp="1627929558490" />
-    <state width="1750" height="277" key="GridCell.Tab.0.bottom/0.25.1792.1029@0.25.1792.1029" timestamp="1626376525448" />
-    <state width="1750" height="308" key="GridCell.Tab.0.center" timestamp="1627929558489">
-      <screen x="0" y="25" width="1792" height="1027" />
+    <state width="1750" height="308" key="GridCell.Tab.0.bottom/0.25.1792.1027@0.25.1792.1027" timestamp="1627937178748" />
+    <state width="1750" height="118" key="GridCell.Tab.0.bottom/0.25.1792.1029@0.25.1792.1029" timestamp="1627949607381" />
+    <state width="1750" height="118" key="GridCell.Tab.0.center" timestamp="1627949607381">
+      <screen x="0" y="25" width="1792" height="1029" />
     </state>
     <state width="1750" height="265" key="GridCell.Tab.0.center/0.25.1792.1021@0.25.1792.1021" timestamp="1626825509014" />
     <state width="1750" height="275" key="GridCell.Tab.0.center/0.25.1792.1023@0.25.1792.1023" timestamp="1626824863661" />
     <state width="1750" height="275" key="GridCell.Tab.0.center/0.25.1792.1024@0.25.1792.1024" timestamp="1626892868894" />
     <state width="1750" height="67" key="GridCell.Tab.0.center/0.25.1792.1026@0.25.1792.1026" timestamp="1626468554266" />
-    <state width="1750" height="308" key="GridCell.Tab.0.center/0.25.1792.1027@0.25.1792.1027" timestamp="1627929558489" />
-    <state width="1750" height="277" key="GridCell.Tab.0.center/0.25.1792.1029@0.25.1792.1029" timestamp="1626376525447" />
-    <state width="1750" height="308" key="GridCell.Tab.0.left" timestamp="1627929558488">
-      <screen x="0" y="25" width="1792" height="1027" />
+    <state width="1750" height="308" key="GridCell.Tab.0.center/0.25.1792.1027@0.25.1792.1027" timestamp="1627937178748" />
+    <state width="1750" height="118" key="GridCell.Tab.0.center/0.25.1792.1029@0.25.1792.1029" timestamp="1627949607381" />
+    <state width="1750" height="118" key="GridCell.Tab.0.left" timestamp="1627949607381">
+      <screen x="0" y="25" width="1792" height="1029" />
     </state>
     <state width="1750" height="265" key="GridCell.Tab.0.left/0.25.1792.1021@0.25.1792.1021" timestamp="1626825509014" />
     <state width="1750" height="275" key="GridCell.Tab.0.left/0.25.1792.1023@0.25.1792.1023" timestamp="1626824863660" />
     <state width="1750" height="275" key="GridCell.Tab.0.left/0.25.1792.1024@0.25.1792.1024" timestamp="1626892868893" />
     <state width="1750" height="67" key="GridCell.Tab.0.left/0.25.1792.1026@0.25.1792.1026" timestamp="1626468554266" />
-    <state width="1750" height="308" key="GridCell.Tab.0.left/0.25.1792.1027@0.25.1792.1027" timestamp="1627929558488" />
-    <state width="1750" height="277" key="GridCell.Tab.0.left/0.25.1792.1029@0.25.1792.1029" timestamp="1626376525446" />
-    <state width="1750" height="308" key="GridCell.Tab.0.right" timestamp="1627929558489">
-      <screen x="0" y="25" width="1792" height="1027" />
+    <state width="1750" height="308" key="GridCell.Tab.0.left/0.25.1792.1027@0.25.1792.1027" timestamp="1627937178747" />
+    <state width="1750" height="118" key="GridCell.Tab.0.left/0.25.1792.1029@0.25.1792.1029" timestamp="1627949607381" />
+    <state width="1750" height="118" key="GridCell.Tab.0.right" timestamp="1627949607381">
+      <screen x="0" y="25" width="1792" height="1029" />
     </state>
     <state width="1750" height="265" key="GridCell.Tab.0.right/0.25.1792.1021@0.25.1792.1021" timestamp="1626825509015" />
     <state width="1750" height="275" key="GridCell.Tab.0.right/0.25.1792.1023@0.25.1792.1023" timestamp="1626824863662" />
     <state width="1750" height="275" key="GridCell.Tab.0.right/0.25.1792.1024@0.25.1792.1024" timestamp="1626892868895" />
     <state width="1750" height="67" key="GridCell.Tab.0.right/0.25.1792.1026@0.25.1792.1026" timestamp="1626468554266" />
-    <state width="1750" height="308" key="GridCell.Tab.0.right/0.25.1792.1027@0.25.1792.1027" timestamp="1627929558489" />
-    <state width="1750" height="277" key="GridCell.Tab.0.right/0.25.1792.1029@0.25.1792.1029" timestamp="1626376525447" />
-    <state x="496" y="273" key="Vcs.Push.Dialog.v2" timestamp="1626822379220">
-      <screen x="0" y="25" width="1792" height="1024" />
+    <state width="1750" height="308" key="GridCell.Tab.0.right/0.25.1792.1027@0.25.1792.1027" timestamp="1627937178748" />
+    <state width="1750" height="118" key="GridCell.Tab.0.right/0.25.1792.1029@0.25.1792.1029" timestamp="1627949607381" />
+    <state x="496" y="274" key="Vcs.Push.Dialog.v2" timestamp="1627949657374">
+      <screen x="0" y="25" width="1792" height="1029" />
     </state>
     <state x="496" y="273" key="Vcs.Push.Dialog.v2/0.25.1792.1023@0.25.1792.1023" timestamp="1626735455713" />
     <state x="496" y="273" key="Vcs.Push.Dialog.v2/0.25.1792.1024@0.25.1792.1024" timestamp="1626822379220" />
-    <state x="496" y="274" key="Vcs.Push.Dialog.v2/0.25.1792.1029@0.25.1792.1029" timestamp="1626378803444" />
+    <state x="496" y="274" key="Vcs.Push.Dialog.v2/0.25.1792.1027@0.25.1792.1027" timestamp="1627934258954" />
+    <state x="496" y="274" key="Vcs.Push.Dialog.v2/0.25.1792.1029@0.25.1792.1029" timestamp="1627949657374" />
     <state x="697" y="454" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1627928256151">
       <screen x="0" y="25" width="1792" height="1027" />
     </state>
     <state x="697" y="454" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.25.1792.1027@0.25.1792.1027" timestamp="1627928256151" />
+    <state x="635" y="253" key="git4idea.branch.GitSmartOperationDialog" timestamp="1627943288637">
+      <screen x="0" y="25" width="1792" height="1029" />
+    </state>
+    <state x="635" y="253" key="git4idea.branch.GitSmartOperationDialog/0.25.1792.1029@0.25.1792.1029" timestamp="1627943288637" />
     <state x="561" y="251" width="670" height="675" key="search.everywhere.popup" timestamp="1626810806786">
       <screen x="0" y="25" width="1792" height="1024" />
     </state>
