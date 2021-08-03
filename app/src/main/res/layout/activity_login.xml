@@ -11,12 +11,13 @@
 
     <ImageView
         android:id="@+id/ivTitle"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="100dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
         android:src="@drawable/ic_launcher_background"
-        app:layout_constraintTop_toBottomOf="@+id/ivLogo" />
+        app:layout_constraintTop_toBottomOf="@+id/ivLogo"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <EditText
         android:id="@+id/etUsername"

@@ -97,7 +97,6 @@ public class HomeFragment extends Fragment {
             }
         };
         rvFeed.addOnScrollListener(scrollListener);
-        // query posts from Parstagram
         queryPosts();
     }
 

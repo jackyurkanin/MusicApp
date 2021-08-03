@@ -1,7 +1,6 @@
 package com.codepath.raptap;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,19 +11,21 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.codepath.raptap.models.Sound;
 import com.parse.ParseFile;
 
-import org.parceler.Parcels;
-
+import java.util.Date;
 import java.util.List;
-
-import static com.codepath.raptap.activities.SoundActivity.DEBUG;
 
 public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     private Context context;
     private List<Sound> feed;
-    private static final String POST = "post";
+    private static final String POST = "feedAdapter";
+    private static final String DEBUG = "Debug process";
+    private static int ROUNDED_CORNERS = 30;
+
 
     public FeedAdapter(Context context, List<Sound> feed) {
         this.context = context;
@@ -34,7 +35,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Create the view and return it as a viewHolder
-        View v = LayoutInflater.from(context).inflate(R.layout.post_item, parent, false);
+        View v = LayoutInflater.from(context).inflate(R.layout.sound_post_item, parent, false);
         return new ViewHolder(v);
     }
 
@@ -60,21 +61,47 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         notifyDataSetChanged();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView tvUsername;
+        private TextView tvSongName;
         private TextView tvDescription;
+        private TextView tvCreatedAt;
+        private ImageView ivCoverImage;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvUsername = itemView.findViewById(R.id.tvUsername);
+            ivCoverImage = itemView.findViewById(R.id.ivCoverImage);
+            tvCreatedAt = itemView.findViewById(R.id.tvCreatedAt);
+            tvSongName = itemView.findViewById(R.id.tvSongName);
+            tvUsername = itemView.findViewById(R.id.tvHandle);
             tvDescription = itemView.findViewById(R.id.tvDescription);
         }
 
         public void bind(Sound sound) {
             // Bind the post data to the view elements
             tvDescription.setText(sound.getDescription());
-            tvUsername.setText("@" + sound.getUser().getUsername());
+            tvUsername.setText("by " + sound.getUser().getUsername());
+            tvSongName.setText(sound.getSongName());
+//            tvCreatedAt.setText(dateTime(sound.getCreatedAt()));
             ParseFile audio = sound.getSound();
+            ParseFile image = sound.getCoverPic();
+            if (image != null) {
+                Glide.with(context).load(image.getUrl())
+                        .centerCrop()
+                        .transform(new RoundedCorners(ROUNDED_CORNERS))
+                        .into(ivCoverImage);
+            }
+            ivCoverImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // ToDo:
+                    //   Make onClick play music and advance a progress bar
+                }
+            });
         }
+
+//        private int dateTime(Date createdAt) {
+//        }
+
     }
 }

@@ -10,9 +10,9 @@ public class Sound extends ParseObject {
 
     private static final String KEY_DESCRIPTION = "description";
     private static final String KEY_SOUND = "sound";
-    public static final String KEY_USER = "user";
     private static final String KEY_NAME = "name";
     private static final String KEY_COVER_PICTURE = "cover";
+    public static final String KEY_USER = "user";
 
     public String getDescription() {
         return getString(KEY_DESCRIPTION);
@@ -23,11 +23,11 @@ public class Sound extends ParseObject {
     }
 
     public String getSongName() {
-        return getString(KEY_DESCRIPTION);
+        return getString(KEY_NAME);
     }
 
     public void setSongName(String description) {
-        put(KEY_DESCRIPTION, description);
+        put(KEY_NAME, description);
     }
 
     public ParseFile getSound() {
@@ -51,6 +51,6 @@ public class Sound extends ParseObject {
     }
 
     public void setCoverPicture(ParseFile parseFile) {
-        put(KEY_SOUND, parseFile);
+        put(KEY_COVER_PICTURE, parseFile);
     }
 }

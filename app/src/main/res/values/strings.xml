@@ -13,4 +13,5 @@
     <string name="SongName">Enter song name</string>
     <string name="Create">Create</string>
     <string name="Finish">Finish</string>
+    <string name="SongNameDisplay">Song Name</string>
 </resources>

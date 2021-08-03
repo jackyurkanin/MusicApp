@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioAttributes;
 import android.media.AudioFormat;
+import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder;
 import android.os.Bundle;
@@ -19,8 +20,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.codepath.raptap.R;
 import com.codepath.raptap.databinding.ActivitySoundBinding;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -29,17 +28,18 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
 
     private static final String TAG = "SoundActivity";
     public static final String DEBUG = "DEBUG";
+
     // Use 8000Hz for emulator and 44100 for phone it really should be at least double the frequency we want
-    private static final int TRACK_SAMPLE_RATE = 8000;
-    private static final int TRACK_CHANNELS = AudioFormat.CHANNEL_IN_STEREO;
+    private static final int TRACK_SAMPLE_RATE = 441000;
+    private static final int TRACK_CHANNELS = AudioFormat.CHANNEL_OUT_STEREO;
     private static final int TRACK_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
     private static final int RECORD_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
     private static final int ATTACK_TIME = 250;
     private static final int RELEASE_TIME = 100;
-    private static final int myStream = 0;
+    private static final int STREAM = 0;
 
     private static final float BASE_FREQUENCY = (float) 27.5;
-    private static final float SCALAR = 1000;
+    private static final float SCALAR = 4000;
     private static final float SCALAR_TWO = (float) 0.1;
 
     private int HEIGHT;
@@ -49,15 +49,14 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
 
     private ActivitySoundBinding binding;
     private Context context;
-    private MediaRecorder recorder;
+    private AudioRecord recorder;
     private AudioTrack track;
     private AudioTask audioSynth;
 
     private volatile boolean isPressed;
-    private volatile boolean recording;
     private volatile float frequencyOne = BASE_FREQUENCY;
     private volatile float frequencyTwo = BASE_FREQUENCY;
-    private short[] totalBuffer;
+
     private final Executor executor = Executors.newSingleThreadExecutor(); // change according to your requirements
 
     public SoundActivity() {
@@ -96,27 +95,25 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
                 .setEncoding(TRACK_AUDIO_ENCODING)
                 .setSampleRate(TRACK_SAMPLE_RATE)
                 .build();
-        track = new AudioTrack(attributes, format, minBufferSize, AudioTrack.MODE_STREAM, myStream);
+        track = new AudioTrack(attributes, format, minBufferSize, AudioTrack.MODE_STREAM, STREAM);
     }
 
     private void setUpAudioRecord() {
-//        minBufferSizeRec = AudioRecord.getMinBufferSize(TRACK_SAMPLE_RATE, RECORD_CHANNELS, TRACK_AUDIO_ENCODING);
-//        Log.e(DEBUG, String.valueOf(minBufferSizeRec) + "    " + minBufferSize);
-//        recorder = new AudioRecord(MediaRecorder.AudioSource.UNPROCESSED, TRACK_SAMPLE_RATE, RECORD_CHANNELS, TRACK_AUDIO_ENCODING, minBufferSizeRec);
-        recorder = new MediaRecorder();
-        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        recorder.setAudioChannels(RECORD_CHANNELS);
-        recorder.setAudioEncoder(TRACK_AUDIO_ENCODING);
-
-        try {
-            recorder.prepare();
-        }
-        catch (IOException e) {
-            Log.e(TAG, "Error: " + e);
-        }
-        catch (IllegalStateException e) {
-            Log.e(TAG, "Error: " + e);
-        }
+        minBufferSizeRec = AudioRecord.getMinBufferSize(TRACK_SAMPLE_RATE, RECORD_CHANNELS, TRACK_AUDIO_ENCODING);
+        recorder = new AudioRecord(MediaRecorder.AudioSource.UNPROCESSED, TRACK_SAMPLE_RATE, RECORD_CHANNELS, TRACK_AUDIO_ENCODING, minBufferSizeRec);
+//        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+//        recorder.setAudioChannels(RECORD_CHANNELS);
+//        recorder.setAudioEncoder(TRACK_AUDIO_ENCODING);
+//
+//        try {
+//            recorder.prepare();
+//        }
+//        catch (IOException e) {
+//            Log.e(TAG, "Error: " + e);
+//        }
+//        catch (IllegalStateException e) {
+//            Log.e(TAG, "Error: " + e);
+//        }
     }
 
     @Override
@@ -173,8 +170,9 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
             case R.id.miStart:
                 // ToDo:
                 //  Need to make it start the playing after you press then set visibilty to gone and set visibility to appear when enter
+//                item.setEnabled(false);
                 setUpAudioTrack();
-//                setUpAudioRecord();
+                setUpAudioRecord();
                 track.play();
 //                recorder.start();
                 return true;
@@ -195,7 +193,6 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
     }
 
     private class AudioTask implements Callable<short[]> {
-
         @Override
         public short[] call() {
             short[] buffer = new short[minBufferSize];
@@ -203,7 +200,7 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
             float angular_frequencyOne = (float) (2 * Math.PI) * frequencyOne / TRACK_SAMPLE_RATE;
             while (isPressed) {
                 for (int i = 1; i < buffer.length; ++i) {
-                    float angleOne =  angular_frequencyOne * time;
+                    float angleOne = angular_frequencyOne * time;
 
 //                    if (isPressed) {
                     if (time <= ATTACK_TIME) {
@@ -221,10 +218,9 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
 //                        }
 //                    }
                     time += 1;
-
                 }
-
                 track.write(buffer, 0, buffer.length);
+
 //                recorder.read(buffer, offsetRec, buffer.length);
 //                offsetRec += buffer.length;
             }
