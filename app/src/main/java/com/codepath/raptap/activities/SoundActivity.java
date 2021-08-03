@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioAttributes;
 import android.media.AudioFormat;
-import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder;
 import android.os.Bundle;
@@ -21,6 +20,7 @@ import com.codepath.raptap.R;
 import com.codepath.raptap.databinding.ActivitySoundBinding;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -34,10 +34,13 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
     private static final int TRACK_CHANNELS = AudioFormat.CHANNEL_IN_STEREO;
     private static final int TRACK_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
     private static final int RECORD_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
+    private static final int ATTACK_TIME = 250;
+    private static final int RELEASE_TIME = 100;
     private static final int myStream = 0;
+
     private static final float BASE_FREQUENCY = (float) 27.5;
-    private static final float SCALAR = 2000;
-    private static final float SCALAR_TWO = 2000;
+    private static final float SCALAR = 1000;
+    private static final float SCALAR_TWO = (float) 0.1;
 
     private int HEIGHT;
     private int WIDTH;
@@ -109,10 +112,10 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
             recorder.prepare();
         }
         catch (IOException e) {
-            // handle error
+            Log.e(TAG, "Error: " + e);
         }
         catch (IllegalStateException e) {
-            // handle error
+            Log.e(TAG, "Error: " + e);
         }
     }
 
@@ -131,7 +134,7 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
             case MotionEvent.ACTION_MOVE:
                 isPressed = true;
                 frequencyOne = BASE_FREQUENCY + SCALAR * yPos / HEIGHT;
-                frequencyTwo = BASE_FREQUENCY + SCALAR_TWO * xPos / WIDTH;
+                frequencyTwo = SCALAR_TWO * xPos / WIDTH;
                 Log.i(TAG, "Freq due to yPos: " + String.valueOf(frequencyOne));
                 Log.i(TAG, "Freq due to xPos: " + String.valueOf(frequencyTwo));
                 executeAsync(audioSynth);
@@ -183,7 +186,7 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
     public void executeAsync(Callable<short[]> callable) {
         executor.execute(() -> {
             try {
-                short[] val = callable.call();
+                callable.call();
             } catch (Exception e) {
                 Log.e(TAG, "Failed to call synth thread");
                 e.printStackTrace();
@@ -196,25 +199,36 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
         @Override
         public short[] call() {
             short[] buffer = new short[minBufferSize];
-            int time = 1;
+            int time = 0;
+            float angular_frequencyOne = (float) (2 * Math.PI) * frequencyOne / TRACK_SAMPLE_RATE;
             while (isPressed) {
-                float angular_frequencyOne = (float) (2 * Math.PI) * frequencyOne / TRACK_SAMPLE_RATE;
-                float angular_frequencyTwo = (float) (2 * Math.PI) * frequencyTwo / TRACK_SAMPLE_RATE;
-
-                for (int i = 0; i < buffer.length; ++i) {
+                for (int i = 1; i < buffer.length; ++i) {
                     float angleOne =  angular_frequencyOne * time;
-                    float angleTwo =  (angular_frequencyTwo * time);
 
-                    buffer[i] = (short) (Short.MAX_VALUE * ((float) Math.sin(angleOne) ));
-//                    buffer[i] = (short) (Short.MAX_VALUE * ((float) Math.sin(angle) * amplitude));
+//                    if (isPressed) {
+                    if (time <= ATTACK_TIME) {
+                        buffer[i] = (short) (Short.MAX_VALUE * time / ATTACK_TIME * ((float) Math.sin(angleOne)));
+                    } else {
+                        // buffer[i] = (short) (Short.MAX_VALUE * ((float) Math.sin(angleOne * (1 + angleTwo * Math.sin(angleOne)))));
+                        buffer[i] = (short) (Short.MAX_VALUE * ((float) Math.sin(angleOne)));
+                    }
+//                    } else {
+//                        int diff = buffer.length - i;
+//                        if (diff >= RELEASE_TIME) {
+//                            buffer[i] = (short) (Short.MAX_VALUE * ((float) Math.sin(angleOne)));
+//                        } else {
+//                            buffer[i] = (short) (Short.MAX_VALUE * diff/RELEASE_TIME * ((float) Math.sin(angleOne)));
+//                        }
+//                    }
                     time += 1;
-                }
-                track.write(buffer, 0, buffer.length);
 
+                }
+
+                track.write(buffer, 0, buffer.length);
 //                recorder.read(buffer, offsetRec, buffer.length);
 //                offsetRec += buffer.length;
             }
-            return buffer;
+            return null;
         }
     }
 }
