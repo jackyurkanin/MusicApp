@@ -151,7 +151,7 @@ public class EditActivity extends AppCompatActivity {
         }
     }
 
-    private void PlayAudioFileViaAudioTrack(String filePath, AudioTrack at) throws IOException {
+    public static void PlayAudioFileViaAudioTrack(String filePath, AudioTrack at) throws IOException {
         if (filePath==null) {
             return;
         }

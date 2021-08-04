@@ -1,6 +1,9 @@
 package com.codepath.raptap;
 
 import android.content.Context;
+import android.media.AudioAttributes;
+import android.media.AudioFormat;
+import android.media.AudioTrack;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +16,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.codepath.raptap.activities.EditActivity;
 import com.codepath.raptap.models.Sound;
 import com.parse.ParseFile;
+import com.parse.boltsinternal.Task;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,6 +36,11 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     private static final String DEBUG = "Debug process";
     private static int ROUNDED_CORNERS = 30;
 
+    private static final int TRACK_SAMPLE_RATE = 44100;
+    private static final int TRACK_CHANNELS = AudioFormat.CHANNEL_OUT_STEREO;
+    private static final int TRACK_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
+    private static final int STREAM = 0;
+    private int minBufferSize;
 
     public FeedAdapter(Context context, List<Sound> feed) {
         this.context = context;
@@ -104,9 +116,33 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                 public void onClick(View v) {
                     // ToDo:
                     //   Make onClick play music and advance a progress bar
-
+                    try {
+                        File musicFile = audio.getFile();
+                        setUpPlayerAndPlay(musicFile);
+                    } catch (com.parse.ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
+        }
+
+        private void setUpPlayerAndPlay(File musicFile) {
+            minBufferSize = AudioTrack.getMinBufferSize(TRACK_SAMPLE_RATE, TRACK_CHANNELS, TRACK_AUDIO_ENCODING);
+            AudioAttributes attributes = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .build();
+            AudioFormat format = new AudioFormat.Builder()
+                    .setChannelMask(TRACK_CHANNELS)
+                    .setEncoding(TRACK_AUDIO_ENCODING)
+                    .setSampleRate(TRACK_SAMPLE_RATE)
+                    .build();
+            AudioTrack musicPlayer = new AudioTrack(attributes, format, minBufferSize, AudioTrack.MODE_STREAM, STREAM);
+            try {
+                EditActivity.PlayAudioFileViaAudioTrack(String.valueOf(musicFile), musicPlayer);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         public String getRelativeTimeAgo(String rawJsonDate) {
