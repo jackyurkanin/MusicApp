@@ -19,7 +19,6 @@ public class Sound extends ParseObject {
     private static final String KEY_DESCRIPTION = "description";
     private static final String KEY_SOUND = "sound";
     private static final String KEY_NAME = "name";
-    public static final String KEY_CREATEDAT = "createdAt";
     private static final String KEY_COVER_PICTURE = "cover";
     public static final String KEY_USER = "user";
 

@@ -13,13 +13,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        tools:srcCompat="@tools:sample/avatars" />
+        android:layout_marginTop="20dp"
+        android:visibility="visible"
+        tools:srcCompat="@drawable/ic_launcher_background"
+        tools:visibility="visible" />
 
     <EditText
         android:id="@+id/etSongName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
         android:ems="10"
         android:hint="@string/SongName"
         android:inputType="textPersonName" />
@@ -29,15 +33,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
         android:ems="10"
         android:gravity="start|top"
         android:hint="@string/Description"
         android:inputType="textMultiLine" />
 
     <Button
+        android:id="@+id/btnPlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:text="Play"
+        android:visibility="visible"
+        tools:visibility="visible" />
+
+    <Button
         android:id="@+id/btnMusicSubmit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
         android:text="@string/Create" />
 </LinearLayout>

@@ -20,6 +20,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.codepath.raptap.R;
 import com.codepath.raptap.databinding.ActivitySoundBinding;
+import com.parse.ParseFile;
+
+import org.parceler.Parcel;
+import org.parceler.Parcels;
 
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
@@ -187,7 +191,7 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
                     e.printStackTrace();
                 }
                 Intent editIntent = new Intent(context, EditActivity.class);
-
+                editIntent.putExtra("song", file);
                 startActivity(editIntent);
                 finish();
                 return true;
