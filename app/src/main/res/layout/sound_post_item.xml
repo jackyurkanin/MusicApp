@@ -16,6 +16,7 @@
         android:layout_marginStart="0dp"
         android:layout_marginTop="0dp"
         android:clickable="true"
+        app:srcCompat="@android:drawable/ic_media_play"
         tools:srcCompat="@android:drawable/ic_media_play" />
 
     <TextView
