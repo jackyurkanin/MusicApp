@@ -114,15 +114,15 @@ public class EditActivity extends AppCompatActivity {
         music.setSongName(etSongName.getText().toString());
 //        music.setCoverPicture(new ParseFile(photoFile));
         musicFile = new ParseFile(soundFile);
+        music.setSound(musicFile);
+        Log.e(TAG, String.valueOf(musicFile));
+        Log.e(TAG, String.valueOf(soundFile));
+
         music.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
                     //Save was done
-                    music.setSound(musicFile);
-                    music.setDescription(etSongDescription.getText().toString());
-                    music.setUser(ParseUser.getCurrentUser());
-                    music.setSongName(etSongName.getText().toString());
                     Toast.makeText(context, "Success!!", Toast.LENGTH_SHORT).show();
                 } else {
                     //Something went wrong
