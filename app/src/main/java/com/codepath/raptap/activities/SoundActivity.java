@@ -57,12 +57,16 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
     private int HEIGHT;
     private int WIDTH;
     private int minBufferSize;
+    private int minBufferSizeRec;
 
     private ActivitySoundBinding binding;
     private Context context;
     private AudioRecord recorder;
     private AudioTrack track;
-    private AudioTask audioSynth;
+//    private AudioTask audioSynth;
+    private AudioPlayTask audioPlaySynth;
+    private AudioRecordTask audioRecordSynth;
+
     private FileOutputStream os;
     private BufferedOutputStream bos;
     private DataOutputStream dos;
@@ -70,11 +74,14 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
     private Thread recordingThread;
 
     private volatile boolean isPressed;
+    private volatile boolean isRecording;
     private volatile float frequencyOne = BASE_FREQUENCY;
     private volatile float frequencyTwo = BASE_FREQUENCY;
-    private volatile short[] totalBufferRec;
 
-    private final Executor executor = Executors.newSingleThreadExecutor(); // change according to your requirements
+//    private final Executor executor = Executors.newSingleThreadExecutor(); // change according to your requirements
+    private final Executor executorPlay = Executors.newSingleThreadExecutor();
+    private final Executor executorRecord = Executors.newSingleThreadExecutor();
+
 
     public SoundActivity() {
     }
@@ -89,7 +96,9 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
         context = this;
 
         view.setOnTouchListener(this);
-        audioSynth = new AudioTask();
+//        audioSynth = new AudioTask();
+        audioPlaySynth = new AudioPlayTask();
+        audioRecordSynth = new AudioRecordTask();
     }
 
     @Override
@@ -116,10 +125,8 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
     }
 
     private void setUpAudioRecord() throws FileNotFoundException {
-//        minBufferSizeRec = AudioRecord.getMinBufferSize(TRACK_SAMPLE_RATE, RECORD_CHANNELS, TRACK_AUDIO_ENCODING);
-        recorder = new AudioRecord(MediaRecorder.AudioSource.MIC, TRACK_SAMPLE_RATE, RECORD_CHANNELS, TRACK_AUDIO_ENCODING, minBufferSize);
-        totalBufferRec = new short[minBufferSize];
-
+        minBufferSizeRec = 10 * AudioRecord.getMinBufferSize(TRACK_SAMPLE_RATE, RECORD_CHANNELS, TRACK_AUDIO_ENCODING);
+        recorder = new AudioRecord(MediaRecorder.AudioSource.UNPROCESSED, TRACK_SAMPLE_RATE, RECORD_CHANNELS, TRACK_AUDIO_ENCODING, minBufferSize);
         file = new File(context.getFilesDir().getAbsolutePath() +"/sound.pcm");
         if (file.exists())
             file.delete();
@@ -155,7 +162,9 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
                 frequencyTwo = BASE_FREQUENCY + SCALAR_TWO * xPos / WIDTH;
 //                Log.i(TAG, "Freq due to yPos: " + String.valueOf(frequencyOne));
 //                Log.i(TAG, "Freq due to xPos: " + String.valueOf(frequencyTwo));
-                executeAsync(audioSynth);
+//                executeAsync(audioSynth);
+                executePlayAsync(audioPlaySynth);
+                executeRecordAsync(audioRecordSynth);
                 break;
             case MotionEvent.ACTION_UP:
                 isPressed = false;
@@ -181,6 +190,7 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
                 finish();
                 return true;
             case R.id.miEdit:
+                isRecording = false;
                 track.release();
                 recorder.stop();
                 try {
@@ -206,16 +216,27 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
                     Log.e(TAG, "Failed to create AudioRecord");
                     e.printStackTrace();
                 }
+                isRecording = true;
                 track.play();
-                recorder.startRecording();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    public void executeAsync(Callable<short[]> callable) {
-        executor.execute(() -> {
+//    public void executeAsync(Callable<short[]> callable) {
+//        executor.execute(() -> {
+//            try {
+//                callable.call();
+//            } catch (Exception e) {
+//                Log.e(TAG, "Failed to call synth thread");
+//                e.printStackTrace();
+//            }
+//        });
+//    }
+
+    public void executePlayAsync(Callable<short[]> callable) {
+        executorPlay.execute(() -> {
             try {
                 callable.call();
             } catch (Exception e) {
@@ -225,7 +246,18 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
         });
     }
 
-    private class AudioTask implements Callable<short[]> {
+    public void executeRecordAsync(Callable<short[]> callable) {
+        executorRecord.execute(() -> {
+            try {
+                callable.call();
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to call synth thread");
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private class AudioPlayTask implements Callable<short[]> {
         @Override
         public short[] call() throws IOException {
             short[] buffer = new short[minBufferSize];
@@ -236,16 +268,13 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
                     float angleTwo = (float) (2 * Math.PI) * time * frequencyTwo / TRACK_SAMPLE_RATE;
                     if (isPressed) {
                         if (time <= ATTACK_TIME) {
-                            buffer[i] = (short) (Short.MAX_VALUE * time / ATTACK_TIME * ((float) Math.sin(angleOne)));
+                            buffer[i] = (short) (Short.MAX_VALUE * time / ATTACK_TIME * ((float) Math.sin((angleOne + angleTwo)/2)));
                         } else {
-                            // buffer[i] = (short) (Short.MAX_VALUE * ((float) Math.sin(angleOne * (1 + frequencyTwo * Math.sin(angleOne)))));
-                            // buffer[i] = (short) (Short.MAX_VALUE * ((float) Math.sin(angleOne)));
                             buffer[i] = (short) (Short.MAX_VALUE * ((float) Math.sin((angleOne + angleTwo)/2)));
                         }
                     } else {
                         int diff = buffer.length - i;
                         if (diff >= RELEASE_TIME) {
-                            // buffer[i] = (short) (Short.MAX_VALUE * ((float) Math.sin(angleOne)));
                             buffer[i] = (short) (Short.MAX_VALUE * ((float) Math.sin((angleOne + angleTwo)/2)));
                         } else {
                             buffer[i] = (short) (Short.MAX_VALUE * diff/RELEASE_TIME * ((float) Math.sin(angleOne)));
@@ -254,21 +283,72 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
                     time += 1;
                 }
                 track.write(buffer, 0, buffer.length);
+            }
+            return null;
+        }
+    }
 
-                recordingThread = new Thread(new Runnable() {
-                    public void run() {
-
-                        int bufferReadResult = recorder.read(buffer, 0, buffer.length);
-                        for (int i = 0; i < bufferReadResult; i++) {
-                            try {
-                                dos.writeShort(buffer[i]);
-                            } catch (IOException e) {
-                                Log.e(TAG, "Failed to write short to DataOutputStream");
-                                e.printStackTrace();
+    private class AudioRecordTask implements Callable<short[]> {
+        @Override
+        public short[] call() throws IOException {
+            short[] buffer = new short[minBufferSizeRec];
+            int time = 0;
+            recorder.startRecording();
+            while (isRecording) {
+                if (isPressed) {
+                    for (int i = 1; i < buffer.length; ++i) {
+                        float angleOne = (float) (2 * Math.PI) * time * frequencyOne / TRACK_SAMPLE_RATE;
+                        float angleTwo = (float) (2 * Math.PI) * time * frequencyTwo / TRACK_SAMPLE_RATE;
+                        if (isPressed) {
+                            if (time <= ATTACK_TIME) {
+                                buffer[i] = (short) (Short.MAX_VALUE * time / ATTACK_TIME * ((float) Math.sin((angleOne + angleTwo) / 2)));
+                            } else {
+                                // buffer[i] = (short) (Short.MAX_VALUE * ((float) Math.sin(angleOne * (1 + frequencyTwo * Math.sin(angleOne)))));
+                                // buffer[i] = (short) (Short.MAX_VALUE * ((float) Math.sin(angleOne)));
+                                buffer[i] = (short) (Short.MAX_VALUE * ((float) Math.sin((angleOne + angleTwo) / 2)));
+                            }
+                        } else {
+                            int diff = buffer.length - i;
+                            if (diff >= RELEASE_TIME) {
+                                // buffer[i] = (short) (Short.MAX_VALUE * ((float) Math.sin(angleOne)));
+                                buffer[i] = (short) (Short.MAX_VALUE * ((float) Math.sin((angleOne + angleTwo) / 2)));
+                            } else {
+                                buffer[i] = (short) (Short.MAX_VALUE * diff / RELEASE_TIME * ((float) Math.sin((angleOne + angleTwo) / 2)));
                             }
                         }
+                        time += 1;
                     }
-                });
+                } else {
+                    int count = 0;
+                    for (int i = 1; i < buffer.length; ++i) {
+                        float angleOne = (float) (2 * Math.PI) * time * frequencyOne / TRACK_SAMPLE_RATE;
+                        float angleTwo = (float) (2 * Math.PI) * time * frequencyTwo / TRACK_SAMPLE_RATE;
+                        if (isPressed) {
+                            if (time <= ATTACK_TIME) {
+                                buffer[i] = (short) (Short.MAX_VALUE * time / ATTACK_TIME * ((float) Math.sin((angleOne + angleTwo) / 2)));
+                            } else {
+                                buffer[i] = (short) (Short.MAX_VALUE * ((float) Math.sin((angleOne + angleTwo) / 2)));
+                            }
+                        } else {
+                            if (count < RELEASE_TIME) {
+                                buffer[i] = (short) (Short.MAX_VALUE * (RELEASE_TIME - count) / RELEASE_TIME * ((float) Math.sin((angleOne + angleTwo) / 2)));
+                            } else {
+                                buffer[i] = (short) 0;
+                            }
+                            count += 1;
+                        }
+                        time += 1;
+                    }
+                }
+                int bufferReadResult = recorder.read(buffer, 0, buffer.length);
+                for (int i = 0; i < bufferReadResult; i++) {
+                    try {
+                        dos.writeShort(buffer[i]);
+                    } catch (IOException e) {
+                        Log.e(TAG, "Failed to write short to DataOutputStream");
+                        e.printStackTrace();
+                    }
+                }
             }
             return null;
         }

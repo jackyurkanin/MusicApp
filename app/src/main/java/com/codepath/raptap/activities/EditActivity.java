@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioAttributes;
 import android.media.AudioFormat;
+import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.net.Uri;
 import android.os.Bundle;
@@ -64,10 +65,6 @@ public class EditActivity extends AppCompatActivity {
     private Context context;
     private File soundFile;
     private AudioTrack songPlayer;
-    private FileInputStream inputStream;
-    private short[] songBytes;
-    private BufferedInputStream bis;
-    private DataInputStream dis;
     private ParseFile musicFile;
 
     @Override
@@ -147,26 +144,52 @@ public class EditActivity extends AppCompatActivity {
                 .setSampleRate(TRACK_SAMPLE_RATE)
                 .build();
         songPlayer = new AudioTrack(attributes, format, minBufferSize, AudioTrack.MODE_STREAM, STREAM);
-        songBytes = new short[(int) soundFile.length()];
         try {
-            inputStream = new FileInputStream(soundFile);
-            bis = new BufferedInputStream(inputStream);
-            dis = new DataInputStream(bis);
-            if (dis.available() > 0) {
-                int i = 0;
-                while (dis.available() > 0 && i < songBytes.length){
-                    songBytes[i] = dis.readShort();
-                    i++;
-                }
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            PlayAudioFileViaAudioTrack(String.valueOf(soundFile), songPlayer);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        songPlayer.play();
-        songPlayer.write(songBytes, 0, songBytes.length);
-        songPlayer.stop();
-        songPlayer.release();
+    }
+
+    private void PlayAudioFileViaAudioTrack(String filePath, AudioTrack at) throws IOException {
+        if (filePath==null) {
+            return;
+        }
+
+        if (at==null) {
+            Log.d("TCAudio", "audio track is not initialised ");
+            return;
+        }
+
+        int count = 512 * 1024; // 512 kb
+        //Reading the file..
+        byte[] byteData = null;
+        File file = null;
+        file = new File(filePath);
+
+        byteData = new byte[(int)count];
+        FileInputStream in = null;
+        try {
+            in = new FileInputStream( file );
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        int bytesread = 0, ret = 0;
+        int size = (int) file.length();
+        at.play();
+        while (bytesread < size) {
+            ret = in.read( byteData,0, count);
+            if (ret != -1) { // Write the byte array to the track
+                at.write(byteData,0, ret);
+                bytesread += ret;
+            } else {
+                break;
+            }
+        }
+        in.close();
+        at.stop();
+        at.release();
     }
 }
