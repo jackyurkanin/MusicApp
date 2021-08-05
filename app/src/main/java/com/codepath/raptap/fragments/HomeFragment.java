@@ -41,6 +41,7 @@ public class HomeFragment extends Fragment {
     protected List<Sound> allSounds;
     private EndlessRecyclerViewScrollListener scrollListener;
     private SwipeRefreshLayout swipeContainer;
+    private DividerItemDecoration divider;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -91,7 +92,8 @@ public class HomeFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         rvFeed.setAdapter(adapter);
         rvFeed.setLayoutManager(linearLayoutManager);
-//        rvFeed.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
+        divider = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
+        rvFeed.addItemDecoration(divider);
         rvFeed.setAdapter(adapter);
         scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
