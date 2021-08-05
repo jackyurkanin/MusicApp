@@ -11,14 +11,14 @@ Original App Design Project - README
 
 ## Overview
 ### Description
-The main fuctionality is that users can create a song through the app based on touch with real-time synthesis. Each location on the screen will be assigned to a unique musical sound based on volume and tone. The app will record the music made. People can create, share, and appreciate the music made with the app. Additionally Users can use their spotify information to populate their profiles and 
+The main fuctionality is that users can create a song through the app based on touch with real-time synthesis. Each location on the screen will be assigned to a unique musical sound based on volume and tone. The app will record the music made for playback. People can create, share, and appreciate the music made with the app. Additionally Users can use their spotify information to populate their profiles and 
 post music to showcase the mood they're in.
 
 ### App Evaluation
 - **Category:**
     - interactive and creative app that investigates the possibilities of music
 - **Mobile:**
-    - can be used offline or online
+    - can be used online to post and offline to make songs.
 - **Story:**
     - More of a self profile that people can follow you to see your work
 - **Market:**
@@ -36,7 +36,6 @@ post music to showcase the mood they're in.
 * User can sign in
 * User can make music - Touching screen makes sound
 * User can share/publish the music 
-* Can use the spotify library to post music
 
 **Optional Nice-to-have Stories**
 * User can make music - Icons that press can be dropped on page
@@ -81,11 +80,15 @@ post music to showcase the mood they're in.
    * A sign up
    * Sign into acc w/ spotify.
 * Feed
-   * [list screen navigation here]
-   * ...
+   * button to make go to sound
+   * Logout
+   * Play posts
 * Creating Post
-   * [list screen navigation here]
+   * Start
+   * Edit
+   * return
 * Profile
+   * logout
    * 
 
 ## Wireframes
