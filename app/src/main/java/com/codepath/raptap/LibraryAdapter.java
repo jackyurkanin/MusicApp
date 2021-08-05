@@ -19,20 +19,18 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.codepath.raptap.activities.EditActivity;
 import com.codepath.raptap.models.Sound;
 import com.parse.ParseFile;
-import com.parse.boltsinternal.Task;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
+public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.ViewHolder> {
     private Context context;
     private List<Sound> feed;
-    private static final String TAG = "feedAdapter";
+    private static final String TAG = "libraryAdapter";
     private static final String DEBUG = "Debug process";
     private static int ROUNDED_CORNERS = 30;
     private static final int TRACK_SAMPLE_RATE = 44100;
@@ -41,7 +39,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     private static final int STREAM = 0;
     private int minBufferSize;
 
-    public FeedAdapter(Context context, List<Sound> feed) {
+    public LibraryAdapter(Context context, List<Sound> feed) {
         this.context = context;
         this.feed = feed;
     }
