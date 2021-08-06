@@ -97,8 +97,6 @@ public class ProfileFragment extends Fragment {
         getUserFields();
 
         tvUsername.setText(username);
-        // ToDo:
-        //   need to add recycler function for songs in library
 
         rvLibrary = binding.rvLibrary;
         swipeContainerLibrary = binding.swipeContainerLibrary;
@@ -172,7 +170,8 @@ public class ProfileFragment extends Fragment {
         // specify what type of data we want to query - Post.class
         ParseQuery<Sound> query = ParseQuery.getQuery(Sound.class);
         // include data referred by user key
-        query.include(Sound.KEY_USER);
+//        query.include(Sound.KEY_USER);
+        query.whereEqualTo("user", user.getObjectId());
         // limit query to latest 20 items
         query.setLimit(20);
         // order posts by creation date (newest first)
