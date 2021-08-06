@@ -26,8 +26,10 @@ import org.parceler.Parcel;
 import org.parceler.Parcels;
 
 import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -129,9 +131,12 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
     }
 
     private void setUpAudioRecord() throws FileNotFoundException {
-        minBufferSizeRec = 10 * AudioRecord.getMinBufferSize(TRACK_SAMPLE_RATE, RECORD_CHANNELS, TRACK_AUDIO_ENCODING);
+        minBufferSizeRec = 3 * AudioRecord.getMinBufferSize(TRACK_SAMPLE_RATE, RECORD_CHANNELS, TRACK_AUDIO_ENCODING);
+
         recorder = new AudioRecord(MediaRecorder.AudioSource.UNPROCESSED, TRACK_SAMPLE_RATE, RECORD_CHANNELS, TRACK_AUDIO_ENCODING, minBufferSize);
+
         file = new File(context.getFilesDir().getAbsolutePath() +"/sound.pcm");
+
         if (file.exists())
             file.delete();
         Log.i(TAG,"Delete Files");
@@ -214,6 +219,7 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
                 //  Need to make it start the playing after you press then set visibilty to gone and set visibility to appear when enter
 //                item.setEnabled(false);
                 setUpAudioTrack();
+
                 try {
                     setUpAudioRecord();
                 } catch (FileNotFoundException e) {
@@ -297,6 +303,7 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
         public short[] call() throws IOException {
             short[] buffer = new short[minBufferSizeRec];
             int time = 0;
+            setUpAudioRecord();
             recorder.startRecording();
             while (isRecording) {
                 if (isPressed) {
@@ -353,8 +360,99 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
                         e.printStackTrace();
                     }
                 }
+
             }
             return null;
+        }
+    }
+
+    public void rawToWave(final File rawFile) throws IOException {
+        File waveFile = new File(context.getCacheDir().getPath() + "/music.wav");
+//        File waveFile = DirectoryOperations.createDirAndAudioFile("vocal.wav");// creating the empty wav file.
+
+        if (file.exists())
+            file.delete();
+        Log.i(TAG,"Delete Files");
+        try {
+            file.createNewFile();
+            Log.i(TAG,"Create a file");
+        } catch (IOException e) {
+            Log.i(TAG,"Failed to create");
+            throw new IllegalStateException("Failed to create" + file.toString());
+        }
+
+        byte[] rawData = new byte[(int) rawFile.length()];
+        DataInputStream input = null;
+        try {
+            input = new DataInputStream(new FileInputStream(rawFile));
+            input.read(rawData);
+        } finally {
+            if (input != null) {
+                input.close();
+            }
+        }
+
+        DataOutputStream output = null;//following block is converting raw to wav.
+        try {
+            output = new DataOutputStream(new FileOutputStream(waveFile));
+            // WAVE header
+            // see http://ccrma.stanford.edu/courses/422/projects/WaveFormat/
+            writeString(output, "RIFF"); // chunk id
+            writeInt(output, 36 + rawData.length); // chunk size
+            writeString(output, "WAVE"); // format
+            writeString(output, "fmt "); // subchunk 1 id
+            writeInt(output, 16); // subchunk 1 size
+            writeShort(output, (short) 1); // audio format (1 = PCM)
+            writeShort(output, (short) 1); // number of channels
+            writeInt(output, TRACK_SAMPLE_RATE); // sample rate
+            writeInt(output, TRACK_SAMPLE_RATE * 2); // byte rate
+            writeShort(output, (short) 2); // block align
+            writeShort(output, (short) 16); // bits per sample
+            writeString(output, "data"); // subchunk 2 id
+            writeInt(output, rawData.length); // subchunk 2 size
+            output.write(fullyReadFileToBytes(rawFile));
+
+        } finally {
+            if (output != null) {
+                output.close();
+            }
+        }
+    }
+
+    private byte[] fullyReadFileToBytes(File f) throws IOException {
+        int size = (int) f.length();
+        byte bytes[] = new byte[size];
+        byte tmpBuff[] = new byte[size];
+        try (FileInputStream fis = new FileInputStream(f)) {
+            int read = fis.read(bytes, 0, size);
+            if (read < size) {
+                int remain = size - read;
+                while (remain > 0) {
+                    read = fis.read(tmpBuff, 0, remain);
+                    System.arraycopy(tmpBuff, 0, bytes, size - remain, read);
+                    remain -= read;
+                }
+            }
+        }
+
+        return bytes;
+    }
+
+    private void writeInt(final DataOutputStream output, final int value) throws IOException {
+        output.write(value);
+        output.write(value >> 8);
+        output.write(value >> 16);
+        output.write(value >> 24);
+    }
+
+    private void writeShort(final DataOutputStream output, final short value) throws IOException {
+        output.write(value);
+        output.write(value >> 8);
+    }
+
+    private void writeString(final DataOutputStream output, final String value) throws IOException {
+        for (int i = 0; i < value.length(); i++) {
+            output.write(value.charAt(i));
         }
     }
 }

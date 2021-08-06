@@ -82,9 +82,9 @@ public class HomeFragment extends Fragment {
         swipeContainer = binding.swipeContainer;
         allSounds = new ArrayList<>();
         adapter = new FeedAdapter(context, allSounds);
-//        tags = new ArrayList<>();
-//        String username = ParseUser.getCurrentUser().getUsername();
-//        getUserTags(username);
+        tags = new ArrayList<>();
+        String username = ParseUser.getCurrentUser().getUsername();
+        getUserTags(username);
 
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -104,8 +104,8 @@ public class HomeFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         rvFeed.setAdapter(adapter);
         rvFeed.setLayoutManager(linearLayoutManager);
-        divider = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
-        rvFeed.addItemDecoration(divider);
+//        divider = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
+//        rvFeed.addItemDecoration(divider);
         rvFeed.setAdapter(adapter);
         scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
