@@ -105,9 +105,13 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
     public void onPause() {
         super.onPause();
         isPressed = false;
-        track.release();
-        recorder.stop();
-        recorder.release();
+        if (track != null) {
+            track.release();
+        }
+        if (recorder != null) {
+            recorder.stop();
+            recorder.release();
+        }
     }
 
     private void setUpAudioTrack() {

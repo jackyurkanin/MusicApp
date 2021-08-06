@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.bumptech.glide.Glide;
 import com.codepath.raptap.FeedAdapter;
 import com.codepath.raptap.activities.EditActivity;
 import com.codepath.raptap.databinding.FragmentHomeBinding;
@@ -26,6 +28,10 @@ import com.codepath.raptap.models.Sound;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,12 +42,15 @@ public class HomeFragment extends Fragment {
     private Context context;
     private FragmentHomeBinding binding;
     private static final String TAG = "HomeFragment";
+    public static final String KEY_TAGS = "tags";
     private RecyclerView rvFeed;
     protected FeedAdapter adapter;
     protected List<Sound> allSounds;
     private EndlessRecyclerViewScrollListener scrollListener;
     private SwipeRefreshLayout swipeContainer;
     private DividerItemDecoration divider;
+    protected List<String> tags;
+
 
     public HomeFragment() {
         // Required empty public constructor
@@ -73,6 +82,9 @@ public class HomeFragment extends Fragment {
         swipeContainer = binding.swipeContainer;
         allSounds = new ArrayList<>();
         adapter = new FeedAdapter(context, allSounds);
+//        tags = new ArrayList<>();
+//        String username = ParseUser.getCurrentUser().getUsername();
+//        getUserTags(username);
 
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -105,6 +117,7 @@ public class HomeFragment extends Fragment {
         };
         rvFeed.addOnScrollListener(scrollListener);
         queryPosts();
+//        queryTags();
     }
 
     public void fetchTimelineAsync(int page) {
@@ -113,6 +126,7 @@ public class HomeFragment extends Fragment {
         // getHomeTimeline is an example endpoint.
         adapter.clear();
         queryPosts();
+//        queryTags();
     }
 
     private void queryPosts() {
@@ -142,6 +156,35 @@ public class HomeFragment extends Fragment {
         });
     }
 
+    private void queryTags() {
+        // specify what type of data we want to query - Post.class
+        for (int i = 0; i < tags.size(); i++) {
+            ParseQuery<Sound> query = ParseQuery.getQuery(Sound.class);
+            // include data referred by user key
+            query.include(tags.get(i));
+            // limit query to latest 20 items
+            query.setLimit(20);
+            // order posts by creation date (newest first)
+            query.addDescendingOrder("createdAt");
+            // start an asynchronous call for posts
+            query.findInBackground(new FindCallback<Sound>() {
+                @Override
+                public void done(List<Sound> sounds, ParseException e) {
+                    // check for errors
+                    if (e != null) {
+                        Log.e(TAG, "Issue with getting posts", e);
+                        return;
+                    }
+
+                    // save received posts to list and notify adapter of new data
+                    allSounds.addAll(sounds);
+                    adapter.notifyDataSetChanged();
+                    swipeContainer.setRefreshing(false);
+                }
+            });
+        }
+    }
+
     public void loadNextDataFromApi(int offset) {
         ParseQuery<Sound> query = ParseQuery.getQuery(Sound.class);
         // include data referred by user key
@@ -166,6 +209,30 @@ public class HomeFragment extends Fragment {
                 // notify the adapter we added new stuff to the end of the list
                 adapter.notifyItemRangeInserted(offset, sounds.size() - 1);
                 swipeContainer.setRefreshing(false);
+            }
+        });
+    }
+
+    public void getUserTags(String name) {
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+        query.whereEqualTo("username", name);
+        query.findInBackground((users, e) -> {
+            if (e == null) {
+                // The query was successful, returns the users that matches
+                // the criteria.
+                for(ParseUser user1 : users) {
+                    JSONArray userTags = user1.getJSONArray(KEY_TAGS);
+                    for (int i = 0; i < userTags.length(); i++) {
+                        try {
+                            tags.add(userTags.getString(i));
+                        } catch (JSONException jsonException) {
+                            jsonException.printStackTrace();
+                        }
+                    }
+                }
+            } else {
+                // Something went wrong.
+                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

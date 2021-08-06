@@ -11,12 +11,15 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.codepath.raptap.R;
 import com.codepath.raptap.databinding.ActivityMainBinding;
 import com.codepath.raptap.fragments.HomeFragment;
 import com.codepath.raptap.fragments.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 public class MainActivity extends AppCompatActivity {
@@ -78,12 +81,14 @@ public class MainActivity extends AppCompatActivity {
                 if(ParseUser.getCurrentUser() == null)
                     goToLoginActivity();
                 return true;
-            case R.id.miStudio:
-                Intent studio = new Intent(MainActivity.this, SoundActivity.class);
-                startActivity(studio);
             case R.id.miSettings:
                 Intent settings = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(settings);
+                return true;
+            case R.id.miStudio:
+                Intent studio = new Intent(MainActivity.this, SoundActivity.class);
+                startActivity(studio);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
