@@ -16,4 +16,6 @@
     <string name="SongNameDisplay">Song Name</string>
     <string name="ProfileBio">Bio</string>
     <string name="ProfileName">Handle</string>
+    <string name="Settings">Settings</string>
+    <string name="Submit">Submit</string>
 </resources>

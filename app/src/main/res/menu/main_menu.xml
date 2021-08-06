@@ -10,4 +10,9 @@
         android:id="@+id/miLogout"
         android:title="@string/Logout"
         app:showAsAction="collapseActionView" />
+
+    <item
+        android:id="@+id/miSettings"
+        android:title="@string/Settings"
+        app:showAsAction="collapseActionView" />
 </menu>

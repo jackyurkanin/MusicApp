@@ -81,6 +81,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.miStudio:
                 Intent studio = new Intent(MainActivity.this, SoundActivity.class);
                 startActivity(studio);
+            case R.id.miSettings:
+                Intent settings = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(settings);
             default:
                 return super.onOptionsItemSelected(item);
         }

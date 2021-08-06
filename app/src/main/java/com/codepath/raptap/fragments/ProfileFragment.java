@@ -146,11 +146,9 @@ public class ProfileFragment extends Fragment {
                 // The query was successful, returns the users that matches
                 // the criteria.
                 for(ParseUser user1 : users) {
-                    Log.d("User List ", (user1.getUsername()));
                     bio = user1.getString(KEY_BIO);
                     tvBio.setText(bio);
                     profileImage = user1.getParseFile(KEY_PROFILE_PICTURE);
-                    Log.e(TAG, String.valueOf(profileImage));
                     if (profileImage != null){
                         Glide.with(context).load(profileImage.getUrl()).circleCrop().into(ivProfilePic);
                     }
