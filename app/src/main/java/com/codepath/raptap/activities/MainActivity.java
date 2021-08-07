@@ -18,9 +18,13 @@ import com.codepath.raptap.R;
 import com.codepath.raptap.databinding.ActivityMainBinding;
 import com.codepath.raptap.fragments.HomeFragment;
 import com.codepath.raptap.fragments.ProfileFragment;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+
+import me.ibrahimsn.lib.OnItemSelectedListener;
+import me.ibrahimsn.lib.SmoothBottomBar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
     private Context context;
     private Fragment fragment;
+    private SmoothBottomBar bottomBar;
 
 
     @Override
@@ -42,28 +47,49 @@ public class MainActivity extends AppCompatActivity {
         fragmentManager = getSupportFragmentManager();
         fragment = HomeFragment.newInstance(this);
 
-        bottomNavigationView = binding.bottomNavigation;
-        bottomNavigationView.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.miHome:
-                                fragment = HomeFragment.newInstance(context);
-                                break;
-                            case R.id.miProfile:
-                                fragment = ProfileFragment.newInstance(context);
-                                break;
-                            default:
-                                fragment = ProfileFragment.newInstance(context);
-                                break;
-                        }
-                        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
-                        return true;
-                    }
-                });
+        bottomBar = binding.bottomBar;
+        bottomBar.setOnItemSelectedListener(new OnItemSelectedListener() {
+            @Override
+            public boolean onItemSelect(int i) {
+                switch (i) {
+                    case 0:
+                        fragment = HomeFragment.newInstance(context);
+                        break;
+                    case 1:
+                        fragment = ProfileFragment.newInstance(context);
+                        break;
+                    default:
+                        fragment = ProfileFragment.newInstance(context);
+                        break;
+                }
+                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+                return true;
+            }
+        });
+//        bottomNavigationView = binding.bottom;
+//        bottomNavigationView.setOnNavigationItemSelectedListener(
+//                new BottomNavigationView.OnNavigationItemSelectedListener() {
+//                    @Override
+//                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//                        switch (item.getItemId()) {
+//                            case R.id.miHome:
+//                                fragment = HomeFragment.newInstance(context);
+//                                break;
+//                            case R.id.miProfile:
+//                                fragment = ProfileFragment.newInstance(context);
+//                                break;
+//                            default:
+//                                fragment = ProfileFragment.newInstance(context);
+//                                break;
+//                        }
+//                        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+//                        return true;
+//                    }
+//                });
+//
         // Set default selection
-        bottomNavigationView.setSelectedItemId(R.id.miHome);
+        bottomBar.setItemActiveIndex(0);
+//        bottomNavigationView.setSelectedItemId(R.id.miHome);
         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
     }
 

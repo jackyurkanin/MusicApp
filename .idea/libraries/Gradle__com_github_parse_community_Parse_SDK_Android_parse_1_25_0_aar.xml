@@ -1,9 +1,10 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.parse-community.Parse-SDK-Android:parse:1.25.0@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ae207d4bd6ec20595b53c5f50e476ee3/parse-1.25.0/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ae207d4bd6ec20595b53c5f50e476ee3/parse-1.25.0/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ae207d4bd6ec20595b53c5f50e476ee3/parse-1.25.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/87a5f9d36f8e7fb5fe03e96b194c7279/parse-1.25.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/87a5f9d36f8e7fb5fe03e96b194c7279/parse-1.25.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/87a5f9d36f8e7fb5fe03e96b194c7279/parse-1.25.0/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.parse-community.Parse-SDK-Android/parse/1.25.0/acc47efe892b5f64232c24cdf37a1f135b5aa866/parse-1.25.0-javadoc.jar!/" />

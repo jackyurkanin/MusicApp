@@ -3,17 +3,23 @@ package com.codepath.raptap.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.codepath.raptap.R;
 import com.codepath.raptap.databinding.ActivityLoginBinding;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
+
+import io.github.muddz.styleabletoast.StyleableToast;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -26,6 +32,8 @@ public class LoginActivity extends AppCompatActivity {
     private EditText etPassword;
     private EditText etSignupUser;
     private EditText etSignupPass;
+    private Animation in;
+    private Animation out;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +46,16 @@ public class LoginActivity extends AppCompatActivity {
             goToMainActivity();
         }
 
+
         etUsername = binding.etUsername;
         etPassword = binding.etPassword;
         etSignupPass = binding.etSignupPass;
         etSignupUser = binding.etSignupUser;
+
+        in = new AlphaAnimation(0.0f, 1.0f);
+        in.setDuration(1500);
+        out = new AlphaAnimation(1.0f, 0.0f);
+        out.setDuration(1500);
 
         btnNewUser = binding.btnNewUser;
         btnNewUser.setOnClickListener(new View.OnClickListener() {
@@ -75,8 +89,19 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void screenChange() {
-        // get rid of button, make everything else visible
+//        // get rid of button, make everything else visible
+
+        btnSignUp.startAnimation(in);
+        btnNewUser.startAnimation(out);
+        btnLogin.startAnimation(out);
+        etSignupUser.startAnimation(in);
+        etSignupPass.startAnimation(in);
+        etUsername.startAnimation(out);
+        etPassword.startAnimation(out);
         btnNewUser.setVisibility(View.GONE);
+        etPassword.setVisibility(View.GONE);
+        etUsername.setVisibility(View.GONE);
+        btnLogin.setVisibility(View.GONE);
         btnSignUp.setVisibility(View.VISIBLE);
         etSignupUser.setVisibility(View.VISIBLE);
         etSignupPass.setVisibility(View.VISIBLE);
@@ -95,11 +120,12 @@ public class LoginActivity extends AppCompatActivity {
             if (e == null) {
                 // Hooray! Let them use the app now.
                 goToMainActivity();
-                Toast.makeText(LoginActivity.this, "Successful!", Toast.LENGTH_LONG).show();
+                StyleableToast.makeText(this, "Successful!", Toast.LENGTH_SHORT, R.style.mytoast).show();
             } else {
                 // Sign up didn't succeed. Look at the ParseException
                 // to figure out what went wrong
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                StyleableToast.makeText(this, e.getMessage(), Toast.LENGTH_LONG, R.style.mytoast).show();
 
             }
         });
@@ -116,7 +142,13 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
                 goToMainActivity();
-                Toast.makeText(LoginActivity.this, "Successful!", Toast.LENGTH_LONG).show();
+//                StyleableToast.makeText(LoginActivity.this, "Successful!", Toast.LENGTH_SHORT, R.style.mytoast).show();
+                new StyleableToast
+                        .Builder(LoginActivity.this)
+                        .text("Successful!")
+                        .textColor(Color.parseColor("#7E2228"))
+                        .backgroundColor(Color.parseColor("#A7A7A7"))
+                        .show();
             }
         });
     }

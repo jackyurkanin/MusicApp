@@ -4,11 +4,12 @@
 
     <item
         android:id="@+id/miHome"
+        android:icon="@drawable/ic_home"
         android:title="@string/Home"
         app:showAsAction="always" />
     <item
         android:id="@+id/miProfile"
+        android:icon="@drawable/ic_launcher_foreground"
         android:title="@string/Profile"
         app:showAsAction="always" />
-
 </menu>
