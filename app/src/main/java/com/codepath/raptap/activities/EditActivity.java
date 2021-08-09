@@ -192,4 +192,23 @@ public class EditActivity extends AppCompatActivity {
         at.stop();
         at.release();
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.edit_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.miDone:
+                Intent backToMainIntent = new Intent(EditActivity.this, MainActivity.class);
+                startActivity(backToMainIntent);
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

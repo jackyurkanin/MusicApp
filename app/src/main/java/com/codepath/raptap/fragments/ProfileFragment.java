@@ -123,8 +123,8 @@ public class ProfileFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         rvLibrary.setAdapter(adapter);
         rvLibrary.setLayoutManager(linearLayoutManager);
-        libraryDivider = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
-        rvLibrary.addItemDecoration(libraryDivider);
+//        libraryDivider = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
+//        rvLibrary.addItemDecoration(libraryDivider);
         rvLibrary.setAdapter(adapter);
         scrollListenerLibrary = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override

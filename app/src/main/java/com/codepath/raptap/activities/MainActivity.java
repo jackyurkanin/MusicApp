@@ -66,30 +66,9 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-//        bottomNavigationView = binding.bottom;
-//        bottomNavigationView.setOnNavigationItemSelectedListener(
-//                new BottomNavigationView.OnNavigationItemSelectedListener() {
-//                    @Override
-//                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//                        switch (item.getItemId()) {
-//                            case R.id.miHome:
-//                                fragment = HomeFragment.newInstance(context);
-//                                break;
-//                            case R.id.miProfile:
-//                                fragment = ProfileFragment.newInstance(context);
-//                                break;
-//                            default:
-//                                fragment = ProfileFragment.newInstance(context);
-//                                break;
-//                        }
-//                        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
-//                        return true;
-//                    }
-//                });
-//
+
         // Set default selection
         bottomBar.setItemActiveIndex(0);
-//        bottomNavigationView.setSelectedItemId(R.id.miHome);
         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
     }
 

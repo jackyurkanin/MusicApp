@@ -8,6 +8,7 @@ import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder;
+import android.media.audiofx.Visualizer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -20,6 +21,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.codepath.raptap.R;
 import com.codepath.raptap.databinding.ActivitySoundBinding;
+import com.gauravk.audiovisualizer.visualizer.BarVisualizer;
+import com.gauravk.audiovisualizer.visualizer.BlastVisualizer;
+import com.gauravk.audiovisualizer.visualizer.CircleLineVisualizer;
 import com.parse.ParseFile;
 
 import org.parceler.Parcel;
@@ -51,8 +55,8 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
     private static final int STREAM = 0;
 
     private static final float BASE_FREQUENCY = (float) 27.5;
-    private static final float SCALAR = 1000;
-    private static final float SCALAR_TWO = 1000;
+    private static final float SCALAR = 750;
+    private static final float SCALAR_TWO = 750;
 
     private int HEIGHT;
     private int WIDTH;
@@ -61,9 +65,10 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
 
     private ActivitySoundBinding binding;
     private Context context;
+    private CircleLineVisualizer visualizer;
     private AudioRecord recorder;
     private AudioTrack track;
-//    private AudioTask audioSynth;
+
     private AudioPlayTask audioPlaySynth;
     private AudioRecordTask audioRecordSynth;
 
@@ -71,7 +76,6 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
     private BufferedOutputStream bos;
     private DataOutputStream dos;
     private File file;
-    private Thread recordingThread;
 
     private volatile boolean isPressed;
     private volatile boolean isRecording;
@@ -96,7 +100,7 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
         context = this;
 
         view.setOnTouchListener(this);
-//        audioSynth = new AudioTask();
+        visualizer = binding.visualizer;
         audioPlaySynth = new AudioPlayTask();
         audioRecordSynth = new AudioRecordTask();
     }
@@ -115,7 +119,7 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
     }
 
     private void setUpAudioTrack() {
-        minBufferSize = AudioTrack.getMinBufferSize(TRACK_SAMPLE_RATE, TRACK_CHANNELS, TRACK_AUDIO_ENCODING);
+        minBufferSize = 2 * AudioTrack.getMinBufferSize(TRACK_SAMPLE_RATE, TRACK_CHANNELS, TRACK_AUDIO_ENCODING);
         AudioAttributes attributes = new AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_MEDIA)
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
@@ -129,8 +133,8 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
     }
 
     private void setUpAudioRecord() throws FileNotFoundException {
-        minBufferSizeRec = 10 * AudioRecord.getMinBufferSize(TRACK_SAMPLE_RATE, RECORD_CHANNELS, TRACK_AUDIO_ENCODING);
-        recorder = new AudioRecord(MediaRecorder.AudioSource.UNPROCESSED, TRACK_SAMPLE_RATE, RECORD_CHANNELS, TRACK_AUDIO_ENCODING, minBufferSize);
+        minBufferSizeRec = 4 * AudioRecord.getMinBufferSize(TRACK_SAMPLE_RATE, RECORD_CHANNELS, TRACK_AUDIO_ENCODING);
+        recorder = new AudioRecord(MediaRecorder.AudioSource.MIC, TRACK_SAMPLE_RATE, RECORD_CHANNELS, TRACK_AUDIO_ENCODING, minBufferSizeRec);
         file = new File(context.getFilesDir().getAbsolutePath() +"/sound.pcm");
         if (file.exists())
             file.delete();
@@ -190,11 +194,19 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.miBack:
-//                mp.release();
+                isRecording = false;
+                if (track != null) {
+                    track.release();
+                }
+                if (recorder != null) {
+                    recorder.release();
+                }
+                visualizer.release();
                 finish();
                 return true;
             case R.id.miEdit:
                 isRecording = false;
+                visualizer.release();
                 track.release();
                 recorder.stop();
                 try {
@@ -222,22 +234,14 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
                 }
                 isRecording = true;
                 track.play();
+                int session = track.getAudioSessionId();
+                if (session != -1)
+                    visualizer.setAudioSessionId(session);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-
-//    public void executeAsync(Callable<short[]> callable) {
-//        executor.execute(() -> {
-//            try {
-//                callable.call();
-//            } catch (Exception e) {
-//                Log.e(TAG, "Failed to call synth thread");
-//                e.printStackTrace();
-//            }
-//        });
-//    }
 
     public void executePlayAsync(Callable<short[]> callable) {
         executorPlay.execute(() -> {
@@ -295,10 +299,11 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
     private class AudioRecordTask implements Callable<short[]> {
         @Override
         public short[] call() throws IOException {
-            short[] buffer = new short[minBufferSizeRec];
+            short[] buffer = null;
             int time = 0;
             recorder.startRecording();
             while (isRecording) {
+                buffer = new short[minBufferSizeRec];
                 if (isPressed) {
                     for (int i = 1; i < buffer.length; ++i) {
                         float angleOne = (float) (2 * Math.PI) * time * frequencyOne / TRACK_SAMPLE_RATE;
@@ -308,13 +313,11 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
                                 buffer[i] = (short) (Short.MAX_VALUE * time / ATTACK_TIME * ((float) Math.sin((angleOne + angleTwo) / 2)));
                             } else {
                                 // buffer[i] = (short) (Short.MAX_VALUE * ((float) Math.sin(angleOne * (1 + frequencyTwo * Math.sin(angleOne)))));
-                                // buffer[i] = (short) (Short.MAX_VALUE * ((float) Math.sin(angleOne)));
                                 buffer[i] = (short) (Short.MAX_VALUE * ((float) Math.sin((angleOne + angleTwo) / 2)));
                             }
                         } else {
                             int diff = buffer.length - i;
                             if (diff >= RELEASE_TIME) {
-                                // buffer[i] = (short) (Short.MAX_VALUE * ((float) Math.sin(angleOne)));
                                 buffer[i] = (short) (Short.MAX_VALUE * ((float) Math.sin((angleOne + angleTwo) / 2)));
                             } else {
                                 buffer[i] = (short) (Short.MAX_VALUE * diff / RELEASE_TIME * ((float) Math.sin((angleOne + angleTwo) / 2)));
@@ -354,6 +357,7 @@ public class SoundActivity extends AppCompatActivity implements View.OnTouchList
                     }
                 }
             }
+            recorder.stop();
             return null;
         }
     }
